@@ -1,12 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import type { Movies } from "@/types";
-const MovieCard = ({
-	movie,
-	handleRemove,
-}: { movie: Movies; handleRemove: (id: string) => void }) => {
+import type { Movies, MovieCardSchema } from "@/types";
+
+const MovieCard = ({ movie, handleRemove }: MovieCardSchema) => {
 	const x = useMotionValue(0);
-	const opacity = useTransform(x, [-150, 0, 150], [0, 1, 0]);
+	const opacity = useTransform(x, [-150, 0, 150], [0, 1, 0]); // IF the x value reach -150  opacity value should be equal 0, IF the x == 0 opacity == 1 and so on
 	const rotate = useTransform(x, [-150, 150], [-18, 18]);
 
 	const handleDragEnd = () => {
@@ -20,7 +18,7 @@ const MovieCard = ({
 			className="w-96 h-fit-content bg-slate-500 border-slate-400 rounded-xl overflow-hidden shadow-xl hover:cursor-grab active:cursor-grabbing"
 			style={{ gridRow: 1, gridColumn: 1, x, opacity, rotate }}
 			drag="x"
-			dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}
+			dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }} // Values are sticking to the center if not moved enough
 			onDragEnd={handleDragEnd}
 		>
 			<Card className="bg-slate-500 border-slate-500">
