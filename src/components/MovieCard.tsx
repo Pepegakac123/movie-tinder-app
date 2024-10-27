@@ -1,17 +1,42 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import type { Movies, MovieCardSchema } from "@/types";
+import { useGlobalContext } from "@/context";
+import { useEffect } from "react";
 
 const MovieCard = ({ movie, handleSwipe }: MovieCardSchema) => {
+	const context = useGlobalContext();
+	if (!context) return null;
+	const { swipeAnimation, resetSwipeAnimation } = context;
+
 	const x = useMotionValue(0);
 	const opacity = useTransform(x, [-150, 0, 150], [0, 1, 0]); // IF the x value reach -150  opacity value should be equal 0, IF the x == 0 opacity == 1 and so on
 	const rotate = useTransform(x, [-150, 150], [-18, 18]);
 
 	const handleDragEnd = () => {
-		if (Math.abs(x.get()) > 50) {
-			handleSwipe(movie.id);
+		if (x.get() > 50) {
+			handleSwipe(movie.id, "right");
+		} else if (x.get() < -50) {
+			handleSwipe(movie.id, "left");
 		}
 	};
+
+	const animateCard = async (direction: "left" | "right") => {
+		const xTarget = direction === "left" ? -200 : 200;
+		await animate(x, xTarget, {
+			type: "spring",
+			duration: 0.5,
+			bounce: 0.2,
+		});
+		handleSwipe(movie.id, direction);
+		resetSwipeAnimation();
+	};
+
+	useEffect(() => {
+		if (swipeAnimation && swipeAnimation.movieId === movie.id) {
+			animateCard(swipeAnimation.direction);
+		}
+	}, [swipeAnimation]);
 
 	return (
 		<motion.div

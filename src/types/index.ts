@@ -8,11 +8,17 @@ export type Movies = {
 
 export type MovieCardSchema = {
 	movie: Movies;
-	handleSwipe: (id: string) => void;
+	handleSwipe: (id: string, direction: "left" | "right") => void;
 };
 
 export type AppContextType = {
 	isModalOpen: boolean;
 	openModal: () => void;
 	closeModal: () => void;
+	swipeAnimation: {
+		movieId: string;
+		direction: "left" | "right";
+	} | null;
+	triggerSwipeAnimation: (movieId: string, direction: "left" | "right") => void;
+	resetSwipeAnimation: () => void;
 };

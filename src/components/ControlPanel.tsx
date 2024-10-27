@@ -1,12 +1,12 @@
 import { FaTimes, FaCheck, FaInfo } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import type { MovieCardSchema } from "@/types";
-import Modal from "./modal";
+import Modal from "./Modal";
 import { useGlobalContext } from "@/context";
 const ControlPanel = ({ movie, handleSwipe }: MovieCardSchema) => {
 	const context = useGlobalContext();
 	if (!context) return null;
-	const { openModal, isModalOpen } = context;
+	const { openModal, isModalOpen, triggerSwipeAnimation } = context;
 
 	return (
 		<>
@@ -15,7 +15,7 @@ const ControlPanel = ({ movie, handleSwipe }: MovieCardSchema) => {
 				<Button
 					variant="outline"
 					className="rounded-full  bg-red-600 h-12 w-12 border-none hover:bg-red-400 transition-all hover:scale-110 duration-300"
-					onClick={() => handleSwipe(movie.id)}
+					onClick={() => triggerSwipeAnimation(movie.id, "left")}
 				>
 					<FaTimes className="h-16 w-16 text-white" />
 				</Button>
@@ -29,7 +29,7 @@ const ControlPanel = ({ movie, handleSwipe }: MovieCardSchema) => {
 				<Button
 					variant="outline"
 					className="rounded-full  bg-green-600 h-12 w-12 border-none hover:bg-green-400 transition-all hover:scale-110 duration-300"
-					onClick={() => handleSwipe(movie.id)}
+					onClick={() => triggerSwipeAnimation(movie.id, "right")}
 				>
 					<FaCheck className="h-16 w-16" />
 				</Button>
