@@ -1,5 +1,5 @@
 import MoviesCard from "./components/MoviesCard";
-
+import { Toaster } from "@/components/ui/toaster";
 const App = () => {
 	return (
 		<main className="h-screen w-screen bg-slate-600 overflow-hidden grid content-center gap-y-8 ">
@@ -9,6 +9,7 @@ const App = () => {
 			<div className="h-full w-full  grid place-items-center content-center gap-y-8 ">
 				<MoviesCard />
 			</div>
+			<Toaster />
 		</main>
 	);
 };

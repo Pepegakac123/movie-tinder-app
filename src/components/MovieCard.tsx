@@ -1,26 +1,28 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import type { Movies, MovieCardSchema } from "@/types";
+import type { Movies } from "@/types";
 import { useGlobalContext } from "@/context";
 import { useEffect } from "react";
 
-const MovieCard = ({ movie, handleSwipe }: MovieCardSchema) => {
+const MovieCard = ({ movie }: { movie: Movies }) => {
 	const context = useGlobalContext();
 	if (!context) return null;
-	const { swipeAnimation, resetSwipeAnimation } = context;
+	const { swipeAnimation, resetSwipeAnimation, handleSwipe } = context;
 
 	const x = useMotionValue(0);
+	console.log(x.get());
 	const opacity = useTransform(x, [-150, 0, 150], [0, 1, 0]); // IF the x value reach -150  opacity value should be equal 0, IF the x == 0 opacity == 1 and so on
 	const rotate = useTransform(x, [-150, 150], [-18, 18]);
 
 	const handleDragEnd = () => {
 		if (x.get() > 50) {
-			handleSwipe(movie.id, "right");
+			handleSwipe(movie, "right");
 		} else if (x.get() < -50) {
-			handleSwipe(movie.id, "left");
+			handleSwipe(movie, "left");
 		}
 	};
 
+	// Animate after button clicked, will be async so the animation is played before deleting
 	const animateCard = async (direction: "left" | "right") => {
 		const xTarget = direction === "left" ? -200 : 200;
 		await animate(x, xTarget, {
@@ -28,19 +30,19 @@ const MovieCard = ({ movie, handleSwipe }: MovieCardSchema) => {
 			duration: 0.5,
 			bounce: 0.2,
 		});
-		handleSwipe(movie.id, direction);
+		handleSwipe(movie, direction);
 		resetSwipeAnimation();
 	};
 
 	useEffect(() => {
-		if (swipeAnimation && swipeAnimation.movieId === movie.id) {
+		if (swipeAnimation && swipeAnimation?.movie.id === movie.id) {
 			animateCard(swipeAnimation.direction);
 		}
 	}, [swipeAnimation]);
 
 	return (
 		<motion.div
-			className="w-72 sm:w-96 h-object-fit bg-slate-500 border-slate-400 rounded-xl overflow-hidden shadow-xl hover:cursor-grab active:cursor-grabbing"
+			className="w-72 sm:w-96 bg-slate-500 border-slate-400 rounded-xl overflow-hidden shadow-xl hover:cursor-grab active:cursor-grabbing h-full"
 			style={{ gridRow: 1, gridColumn: 1, x, opacity, rotate }}
 			drag="x"
 			dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }} // Values are sticking to the center if not moved enough
