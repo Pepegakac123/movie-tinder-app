@@ -11,6 +11,12 @@ export type MovieCardSchema = {
 	handleSwipe: (id: string, direction: "left" | "right") => void;
 };
 
+export type ControlPanelSchema = {
+	movie: Movies;
+	handleSwipe: (id: string, direction: "left" | "right") => void;
+	isBeingSwiped: boolean;
+};
+
 export type AppContextType = {
 	isModalOpen: boolean;
 	openModal: () => void;
